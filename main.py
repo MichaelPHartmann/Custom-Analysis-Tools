@@ -64,4 +64,17 @@ def clean_value_csv():
                 result = ','.join(linelist)
                 clean.write(result)
 
-clean_value_csv()
+def sort_value_csv():
+    with open('NYSE-Value-Clean.csv', 'r') as clean:
+        with open('NYSE-Value-Sort.csv', 'w+') as sort:
+            lines = clean.readlines()
+            sort.write(lines[0])
+            for line in lines[1:]:
+                linelist = line.split(',')
+                if float(linelist[4]) > 0 or float(linelist[9]) > 0 or float(linelist[11]) > 0:
+                    result = ','.join(linelist)
+                    sort.write(result)
+                else:
+                    pass
+
+sort_value_csv()
