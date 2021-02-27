@@ -37,9 +37,10 @@ def find_macturney_value(ticker):
 
     return result
 
-def write_macturney_to_csv():
-    with open('NYSE-Listed.csv', 'r') as nyse:
-        with open('NYSE-MacTurney.csv', 'w+') as s:
+def write_macturney_to_csv(ticker_file):
+    newfile = tickerfile + '_MacTurney.csv'
+    with open(ticker_file, 'r') as nyse:
+        with open(newfile, 'w+') as s:
                 tickers = nyse.readlines()
                 s.write('Ticker, Company Name, Price, cash_price, cash_delta, inventory_price, cash_inventory_price, tangible_price, current_price, current_delta, asset_price, asset_delta\n')
                 for ticker in tickers:
@@ -63,9 +64,9 @@ def write_macturney_to_csv():
                     except BaseException:
                         s.write('')
 
-def update_macturney_csv():
-    with open('NYSE-MacTurney.csv', 'r+') as s:
-        with open('NYSE-MT-temp.csv', 'w+') as temp:
+def update_macturney_csv(target_file):
+    with open(target_file, 'r+') as s:
+        with open('MT-temp.csv', 'w+') as temp:
             lines = s.readlines()[1:]
             newlines_to_write = []
             for index, line in enumerate(lines):
@@ -86,7 +87,7 @@ def update_macturney_csv():
                 temp.write(result)
 
     os.remove('NYSE-MacTurney.csv')
-    os.rename('NYSE-MT-temp.csv', 'NYSE-MacTurney.csv')
+    os.rename('MT-temp.csv', target_file)
 
 def sort_macturney_csv():
     pass
