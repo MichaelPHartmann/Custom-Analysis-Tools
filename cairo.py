@@ -1,9 +1,10 @@
 import os
+import datetime
 
 from FinMesh.iex import stock
 
 
-def find_macturney_value(ticker):
+def find_cairo_value(ticker):
     ks = stock.key_stats(ticker)
     bs = stock.balance_sheet(ticker)['balancesheet'][0]
     p = stock.price(ticker)
@@ -37,8 +38,8 @@ def find_macturney_value(ticker):
 
     return result
 
-def write_macturney_to_csv(ticker_file):
-    newfile = tickerfile + '_MacTurney.csv'
+def write_cairo_to_csv(ticker_file):
+    newfile = tickerfile + '_cairo.csv'
     with open(ticker_file, 'r') as nyse:
         with open(newfile, 'w+') as s:
                 tickers = nyse.readlines()
@@ -47,7 +48,7 @@ def write_macturney_to_csv(ticker_file):
                     t = ticker.rstrip('\n')
                     try:
                         # Make all the entries strings so they can be joined and written as one piece
-                        map_result = map(str, find_macturney_value(t))
+                        map_result = map(str, find_cairo_value(t))
                         unfiltered_result = list(map_result)
 
                         # Check for comma errors in company names and pop them if they exist
@@ -64,12 +65,12 @@ def write_macturney_to_csv(ticker_file):
                     except BaseException:
                         s.write('')
 
-def update_macturney_csv(target_file):
+def update_cairo_csv(target_file):
     with open(target_file, 'r+') as s:
-        with open('MT-temp.csv', 'w+') as temp:
+        with open('Cairo-Data/cairo-temp.csv', 'w+') as temp:
             lines = s.readlines()[1:]
             newlines_to_write = []
-            for index, line in enumerate(lines):
+            for line in lines:
                 line_entries = line.split(',')
                 # Update price
                 price = stock.price(line_entries[0])
@@ -86,8 +87,22 @@ def update_macturney_csv(target_file):
                 result = result + '\n'
                 temp.write(result)
 
-    os.remove('NYSE-MacTurney.csv')
-    os.rename('MT-temp.csv', target_file)
+    os.remove(target_file)
+    os.rename('cairo-temp.csv', target_file)
 
-def sort_macturney_csv():
-    pass
+def sort_cairo_csv(target_file):
+    with open(target_file, 'r') as source:
+        date = str(datetime.date.today())
+        newfile = target_file.strip('.csv') + f'_sorted_{date}.csv'
+        with open(newfile, 'w+') as sort:
+            lines = source.readlines()[1:]
+            for line in lines:
+                line_entries = line.split(',')
+                print(len(line_entries))
+                if float(line_entries[4]) > 0 or float(line_entries[9]) > 0 or float(line_entries[11]) > 0:
+                    result = ','.join(line_entries)
+                    sort.write(result)
+                else:
+                    pass
+
+sort_cairo_csv('Cairo-Data/NYSE-Cairo.csv')
