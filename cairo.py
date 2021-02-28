@@ -68,9 +68,12 @@ def write_cairo_to_csv(ticker_file):
 def update_cairo_csv(target_file):
     with open(target_file, 'r+') as s:
         with open('Cairo-Data/cairo-temp.csv', 'w+') as temp:
-            lines = s.readlines()[1:]
+            lines = source.readlines()
+            header_line = lines[0]
+            data_lines = lines[1:]
             newlines_to_write = []
-            for line in lines:
+            newlines_to_write.append(header_line)
+            for line in data_lines:
                 line_entries = line.split(',')
                 # Update price
                 price = stock.price(line_entries[0])
@@ -88,21 +91,26 @@ def update_cairo_csv(target_file):
                 temp.write(result)
 
     os.remove(target_file)
-    os.rename('cairo-temp.csv', target_file)
+    os.rename('Cairo-Data/cairo-temp.csv', target_file)
 
 def sort_cairo_csv(target_file):
     with open(target_file, 'r') as source:
         date = str(datetime.date.today())
         newfile = target_file.strip('.csv') + f'_sorted_{date}.csv'
         with open(newfile, 'w+') as sort:
-            lines = source.readlines()[1:]
-            for line in lines:
+            lines = source.readlines()
+            header_line = lines[0]
+            data_lines = lines[1:]
+            sort.write(header_line)
+            for line in data_lines:
                 line_entries = line.split(',')
-                print(len(line_entries))
-                if float(line_entries[4]) > 0 or float(line_entries[9]) > 0 or float(line_entries[11]) > 0:
-                    result = ','.join(line_entries)
-                    sort.write(result)
-                else:
+                # Need this try statement to end the loop when it reaches the end of the document
+                try:
+                    # Check cash, current, and asset deltas
+                    if float(line_entries[4]) > 0 or float(line_entries[9]) > 0 or float(line_entries[11]) > 0:
+                        result = ','.join(line_entries)
+                        sort.write(result)
+                    else:
+                        pass
+                except IndexError:
                     pass
-
-sort_cairo_csv('Cairo-Data/NYSE-Cairo.csv')
