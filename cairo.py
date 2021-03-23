@@ -29,12 +29,9 @@ def find_cairo_value(ticker):
     tangible_price = net_tangible_assets / shares_outstanding
     current_price = (current_assets - current_liabilities) / shares_outstanding
     asset_price = (total_assets - total_liabilities) / shares_outstanding
-    cash_delta = cash_price - p
-    current_delta = current_price - p
-    asset_delta = asset_price - p
 
     # Package results as a list
-    result = [ticker, company_name, p, cash_price, cash_delta, inventory_price, cash_inventory_price, tangible_price, current_price, current_delta, asset_price, asset_delta]
+    result = [ticker, company_name, p, cash_price, inventory_price, cash_inventory_price, tangible_price, current_price, asset_price]
 
     return result
 
@@ -43,7 +40,7 @@ def write_cairo_to_csv(ticker_file):
     with open(ticker_file, 'r') as nyse:
         with open(newfile, 'w+') as s:
                 tickers = nyse.readlines()
-                s.write('Ticker, Company Name, Price, cash_price, cash_delta, inventory_price, cash_inventory_price, tangible_price, current_price, current_delta, asset_price, asset_delta\n')
+                s.write('Ticker, Company Name, Price, cash_price, inventory_price, cash_inventory_price, tangible_price, current_price, asset_price\n')
                 for ticker in tickers:
                     t = ticker.rstrip('\n')
                     try:
@@ -75,16 +72,12 @@ def update_cairo_csv(target_file):
             newlines_to_write.append(header_line)
             for line in data_lines:
                 line_entries = line.split(',')
+                
                 # Update price
                 price = stock.price(line_entries[0])
                 line_entries[2] = price
-                # Update cash_delta, current_delta, and asset_delta
-                cash_delta = float(line_entries[3]) - price
-                line_entries[4] = cash_delta
-                current_delta = float(line_entries[8]) - price
-                line_entries[9] = current_delta
-                asset_delta = float(line_entries[10]) - price
-                line_entries[11] = asset_delta
+
+                # Turn the list into strings and join the updated string
                 unjoined_result = map(str, line_entries)
                 result = ','.join(unjoined_result)
                 result = result + '\n'
@@ -107,7 +100,8 @@ def sort_cairo_csv(target_file):
                 # Need this try statement to end the loop when it reaches the end of the document
                 try:
                     # Check cash, current, and asset deltas
-                    if float(line_entries[4]) > 0 or float(line_entries[9]) > 0 or float(line_entries[11]) > 0:
+                    price = float(line_entries[2])
+                    if float(line_entries[3]) > price or float(line_entries[7]) > price or float(line_entries[8]) > price:
                         result = ','.join(line_entries)
                         sort.write(result)
                     else:

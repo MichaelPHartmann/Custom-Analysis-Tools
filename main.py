@@ -5,5 +5,8 @@ This also may be used for developing new tools, but they must be moved to their 
 Export or pickling may happen here for now but eventually a suite of auxiliary functions to handle spreadsheets will be created.
 """
 import cairo
+from FinMesh.iex import stock
 
-cairo.sort_cairo_csv('Cairo-Data/NYSE-Cairo-Full.csv')
+ticker = 'NOK'
+
+with open('nok_financials.json', 'r+') as fin:
