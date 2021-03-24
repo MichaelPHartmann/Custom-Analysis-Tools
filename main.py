@@ -7,6 +7,15 @@ Export or pickling may happen here for now but eventually a suite of auxiliary f
 import cairo
 from FinMesh.iex import stock
 
-ticker = 'NOK'
+# Cairo uses key stats, balance sheet, and price data
 
-with open('nok_financials.json', 'r+') as fin:
+class CustomStockAnalysis:
+    def __init__(self, methods):
+        self.m = methods
+
+    def print_methods(self):
+        print(methods)
+
+methods = ['Cairo', 'Berlin', 'Delhi']
+ut = CustomStockAnalysis(methods)
+ut.print_methods()
