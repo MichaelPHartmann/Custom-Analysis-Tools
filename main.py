@@ -9,13 +9,14 @@ from FinMesh.iex import stock
 
 # Cairo uses key stats, balance sheet, and price data
 
-class CustomStockAnalysis:
-    def __init__(self, methods):
-        self.m = methods
+if __name__ == '__main__':
+    class CustomStockAnalysis:
+        def __init__(self, methods):
+            self.m = methods
 
-    def print_methods(self):
-        print(methods)
+        def print_methods(self):
+            print(methods)
 
-methods = ['Cairo', 'Berlin', 'Delhi']
-ut = CustomStockAnalysis(methods)
-ut.print_methods()
+    methods = ['Cairo', 'Berlin', 'Delhi']
+    ut = CustomStockAnalysis(methods)
+    ut.print_methods()

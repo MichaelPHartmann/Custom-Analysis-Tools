@@ -4,6 +4,12 @@ import datetime
 from FinMesh.iex import stock
 
 class CairoStockAnalysis:
+    """The Cairo method is essentially a check of the asset values per share.
+    In its plain form it measures:
+    1. cash per share
+    2. current assets net of current liabilities per share
+    3. total assets net of total liabilities per share
+    """
     def __init__(self):
         self.tickers = []
         self.tickerfile = ''
